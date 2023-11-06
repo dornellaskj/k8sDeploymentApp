@@ -1,17 +1,9 @@
 version: '3.4'
 
 services:
-  frontend:
-    image: ${DOCKER_REGISTRY-}frontend
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+  
 
-  catalog:
-    image: ${DOCKER_REGISTRY-}catalog
-    build:
-      context: .
-      dockerfile: catalog/Dockerfile
+  
 
 
   ordering:
@@ -19,4 +11,16 @@ services:
     build:
       context: .
       dockerfile: ordering/Dockerfile
+
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend
+    build:
+        context: .
+        dockerfile: frontend/Dockerfile
+
+  catalog:
+    image: ${DOCKER_REGISTRY-}catalog
+    build:
+      context: .
+      dockerfile: catalog/Dockerfile
 
