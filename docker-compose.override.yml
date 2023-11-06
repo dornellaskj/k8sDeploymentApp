@@ -5,6 +5,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - APICONFIGS__CONCERTCATALOG__URI= http://catalog
+      - APICONFIGS__ORDERING__URI= http://ordering
     ports:
       - "80"
       - "443"
@@ -14,6 +16,7 @@ services:
   catalog:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTIONSTRINGS__DEFAULTCONNECTION= Server=SQLSERVER;Database=EventCatalogDb;User=sa;pwd=P@ssW0rd!;Trusted_Connection=True;MultipleActiveResultSets=true"
     ports:
       - "80"
     volumes:
@@ -26,5 +29,9 @@ services:
       - "80"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server/latest
+    environment:
+      - ACCEPT_EULA=TRUE
+      - MSSQL_SA_PASSWORD=P@ssW0rd!
 
