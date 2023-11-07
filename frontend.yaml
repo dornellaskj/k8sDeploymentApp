@@ -1,8 +1,8 @@
-#FE service
-Kind: Service
+#Frontend service
+kind: Service
 apiVersion: v1
 metadata:
-  name: frontecnd
+  name: frontend
   namespace: globoticket
   labels:
     app: frontend
@@ -10,9 +10,9 @@ spec:
   selector:
     app: frontend
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 80
+  - protocol: TCP
+    port: 8080
+    targetPort: 80
   type: LoadBalancer
 ---
 #Frontend deployment
@@ -24,18 +24,18 @@ metadata:
     app: frontend
 spec:
   replicas: 1
-  selector: 
+  selector:
     matchLabels:
       app: frontend
-  template: 
+  template:
     metadata:
       labels:
         app: frontend
-    spec: 
+    spec:
       containers:
       - name: frontend
         image: frontend:dev
-        env: 
+        env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
         - name: ApiConfigs__ConcertCatalog__Uri
@@ -44,7 +44,4 @@ spec:
           value: http://ordering:8080
         ports:
         - containerPort: 80
-        imagePullPolicy: Never ##pulls from local and not a container registry
-
-
-  
+        imagePullPolicy: Never
