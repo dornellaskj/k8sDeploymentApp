@@ -17,9 +17,9 @@ jobs:
     - name: Build the frontend Docker image
       run: |
         docker login --username dornellaskj@gmail.com --password ${{ secrets.GH_password }} ghcr.io
-        docker build . --file frontend/Dockerfile --tag globofrontend:latest
-        docker build . --file ordering/Dockerfile --tag globoordering:latest
-        docker build . --file catalog/Dockerfile --tag globocatalog:latest
-        docker push globofrontend:latest
-        docker push globoordering:latest
-        docker push globocatalog:latest
+        docker build . --file frontend/Dockerfile --tag ghcr.io/globofrontend:latest
+        docker build . --file ordering/Dockerfile --tag ghcr.io/globoordering:latest
+        docker build . --file catalog/Dockerfile --tag ghcr.io/globocatalog:latest
+        docker push ghcr.io/globofrontend:latest
+        docker push ghcr.io/globoordering:latest
+        docker push ghcr.io/globocatalog:latest
