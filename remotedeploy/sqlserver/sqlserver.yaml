@@ -30,7 +30,7 @@ spec:
      - name: MSSQL_AGENT_ENABLED
        value: "1"
      - name: MSSQL_SA_PASSWORD
-       value: P@ssW0rd!
+       value: "P@ssW0rd!"
      volumeMounts:
      - name: mssql
        mountPath: "/var/opt/mssql"
