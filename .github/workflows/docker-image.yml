@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the frontend Docker image
+      run: docker build . --file frontend/Dockerfile --tag globofrontend:$(date +%s)
+    - name: Build the ordering Docker image
+      run: docker build . --file ordering/Dockerfile --tag globofrontend:$(date +%s)
+    - name: Build the catalog Docker image
+      run: docker build . --file catalog/Dockerfile --tag globofrontend:$(date +%s)
