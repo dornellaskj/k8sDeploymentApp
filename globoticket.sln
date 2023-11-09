@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{26E30656-0182-4EEF-B89E-281F23389C42}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.github\workflows\docker-image.yml = .github\workflows\docker-image.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -28,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "deployment", 
 		service-account.yaml = service-account.yaml
 		sqlserver.yaml = sqlserver.yaml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{AA345BA4-FC5C-4877-9E78-8F24E2772F4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +61,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A6E745F5-27B7-40C8-8F25-C8A398E9CA78} = {26E30656-0182-4EEF-B89E-281F23389C42}
 		{9D872868-3972-424C-B825-0CD77B9C8D7F} = {A6E745F5-27B7-40C8-8F25-C8A398E9CA78}
+		{AA345BA4-FC5C-4877-9E78-8F24E2772F4B} = {A6E745F5-27B7-40C8-8F25-C8A398E9CA78}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9F232D3-5386-4E57-B49F-7AF54A4A8843}
