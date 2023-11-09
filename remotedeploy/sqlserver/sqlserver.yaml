@@ -20,7 +20,6 @@ spec:
      image: mcr.microsoft.com/mssql/server:2019-latest
      ports:
      - containerPort: 1433
-       name: tcpsql
      imagePullPolicy: Always
      env:
      - name: ACCEPT_EULA
