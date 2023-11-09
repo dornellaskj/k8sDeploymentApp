@@ -14,12 +14,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the frontend Docker image
+    - name: Build and push frontend
       run: |
         docker login --username dornellaskj@gmail.com --password ${{ secrets.GH_password }} ghcr.io
         docker build . --file frontend/Dockerfile --tag ghcr.io/globofrontend:latest
-        docker build . --file ordering/Dockerfile --tag ghcr.io/globoordering:latest
-        docker build . --file catalog/Dockerfile --tag ghcr.io/globocatalog:latest
         docker push ghcr.io/globofrontend:latest
+    - name: Build and push ordering
+      run: |
+        docker login --username dornellaskj@gmail.com --password ${{ secrets.GH_password }} ghcr.io
+        docker build . --file ordering/Dockerfile --tag ghcr.io/globoordering:latest
         docker push ghcr.io/globoordering:latest
+    - name: Build and push catalog
+      run: |
+        docker login --username dornellaskj@gmail.com --password ${{ secrets.GH_password }} ghcr.io
+        docker build . --file catalog/Dockerfile --tag ghcr.io/globocatalog:latest
         docker push ghcr.io/globocatalog:latest
