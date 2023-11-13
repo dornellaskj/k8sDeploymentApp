@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: globo-frontend
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`globo.kevin.local`)
+      priority: 10
+      services:
+        - name: frontend
+          port: 80

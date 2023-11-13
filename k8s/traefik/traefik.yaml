@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+    - protocol: TCP
+      name: admin
+      port: 8080
+    - protocol: TCP
+      name: websecure
+      port: 443
+  selector:
+    app: traefik
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: traefik-ingress-controller
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: traefik
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      containers:
+        - name: traefik
+          image: traefik:v2.9
+          args:
+            - --api.insecure
+            - --log.level=DEBUG
+            - --accesslog
+            - --entrypoints.web.Address=:80
+            - --entrypoints.websecure.Address=:443
+            - --providers.kubernetescrd
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+            - name: admin
+              containerPort: 8080
+          volumeMounts:
+          - name: traefik-auth
+            mountPath: /config
+
+      volumes:
+      - name: traefik-auth
+        persistentVolumeClaim:
+          claimName: traefik
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.middlewares: default-ipwhitelist@kubernetescrd
+spec:
+  entryPoints:
+    - traefik
+  routes:
+    - match: Host(`traefik.kevin.local`)
+      kind: Rule
+      # middlewares:
+      # - name: ipwhitelist  
+      services:
+        - name: api@internal
+          kind: TraefikService
+          port: 8080
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik
+spec:
+  accessModes: [ReadWriteMany]
+  resources: { requests: { storage: 50Mi } }
