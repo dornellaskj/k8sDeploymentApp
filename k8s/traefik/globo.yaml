@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`globo.kevin.local`)
@@ -13,3 +13,5 @@ spec:
       services:
         - name: frontend
           port: 80
+  tls:
+    secretName: whoami-secret
