@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: whoami
-  namespace: dev
+  namespace: defult
   labels:
     app: whoami
 spec:
@@ -25,7 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: whoami
-  namespace: dev
+  namespace: default
 spec:
   ports:
   - name: whoami
@@ -38,7 +38,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: whoami
-  namespace: dev
+  namespace: default
 spec:
   entryPoints:
     - websecure
