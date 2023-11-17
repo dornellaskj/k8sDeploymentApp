@@ -37,7 +37,7 @@ spec:
         - name: ACCEPT_EULA
           value: "TRUE"
         - name: MSSQL_SA_PASSWORD
-          value: P@ssW0rd!
+          value: P@ssW0rd
         ports:
         - containerPort: 1433
         imagePullPolicy: Always
