@@ -2,7 +2,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: k8sdash
-  namespace: kubernetes-dashboard
+  namespace: kube-system 
 spec:
   entryPoints:
     - web
