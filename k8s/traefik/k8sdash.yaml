@@ -5,7 +5,7 @@ metadata:
   namespace: kube-system 
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`dashboard.kevin.local`)
