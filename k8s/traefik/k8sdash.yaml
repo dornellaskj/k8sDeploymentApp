@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: k8sdash
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`dashboard.kevin.local`)
+      priority: 10
+      services:
+        - name: kubernetes-dashboard
+          port: 443
+
