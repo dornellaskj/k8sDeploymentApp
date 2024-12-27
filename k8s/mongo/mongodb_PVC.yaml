@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mongo-pvc
 spec:
-  storageClassName: local-storage
+  storageClassName: microk8s-hostpath
   accessModes:
     - ReadWriteOnce 
   volumeName: mongo-pv
