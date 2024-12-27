@@ -13,6 +13,6 @@ spec:
     nodePort: 32000
   selector:
     app: mongo
-  type: NodePort
+  type: LoadBalancer
 status:
   loadBalancer: {}
