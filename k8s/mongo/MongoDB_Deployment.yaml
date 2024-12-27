@@ -58,7 +58,7 @@ spec:
               key: password
         volumeMounts:
         - name: "mongo-data-dir"
-          mountPath: "/data/db"
+          mountPath: "/var/opt/mongo"
       volumes:
       - name: "mongo-data-dir"
         persistentVolumeClaim:
