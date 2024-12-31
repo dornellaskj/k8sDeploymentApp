@@ -18,7 +18,7 @@ spec:
         app: mongo
     spec:
       containers:
-      - image: mongo:4.4
+      - image: arm64v8/mongo:4.4.18
         name: mongo
         args: ["--dbpath","/data/db"]
         livenessProbe:
