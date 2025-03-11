@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mssql
+  namespace: globo
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`sql.kevin.local`)
+      priority: 10
+      services:
+        - name: mssql
+          port: 1433
+  tls:
+    secretName: whoami-secret

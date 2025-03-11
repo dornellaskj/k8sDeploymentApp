@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm
+  template:
+    metadata:
+      labels:
+        app: llm
+    spec:
+      containers:
+      - name: llm-container
+        image: registry.hf.space/olivierdehaene-chat-llm-streaming:cpu-6728f78
+        command: [ "python", "app.py" ]
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 1000m
