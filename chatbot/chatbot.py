@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, OpenAIGPTModel
 import faiss
 import torch
 import numpy as np
@@ -12,15 +12,15 @@ with open('show_data.txt', 'r') as f:
     show_data = f.read()
 
 # Load a pre-trained BERT model and tokenizer
-model_name = "bert-base-uncased"  # Switching to BERT from DistilBERT
+model_name = "openai-community/openai-gpt"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModel.from_pretrained(model_name)
+model = OpenAIGPTModel.from_pretrained(model_name)
 
 # Function to convert text to embeddings
 def get_embeddings(text):
     # Tokenize the input text and prepare it for the model
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
-    with torch.no_grad():
+    inputs = tokenizer(text, return_tensors="pt")
+    #with torch.no_grad():
         # Get model outputs
         outputs = model(**inputs)
     # Use the mean of the last hidden state for embeddings
