@@ -1,5 +1,6 @@
-from sentence_transformers import SentenceTransformer
+from transformers import AutoTokenizer, OpenAIGPTModel
 import faiss
+import torch
 import numpy as np
 from flask import Flask, request, jsonify
 
@@ -10,22 +11,27 @@ app = Flask(__name__)
 with open('show_data.txt', 'r') as f:
     show_data = f.read()
 
-# Load a pre-trained sentence transformer model
-model = SentenceTransformer('all-MiniLM-L6-v2')  # Optimized for embeddings
+# Load a pre-trained BERT model and tokenizer
+model_name = "openai-community/openai-gpt"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = OpenAIGPTModel.from_pretrained(model_name)
 
 # Function to convert text to embeddings
 def get_embeddings(text):
-    return model.encode(text, convert_to_numpy=True)
+    # Tokenize the input text and prepare it for the model
+    inputs = tokenizer(text, return_tensors="pt")
+    #with torch.no_grad():
+        # Get model outputs
+        outputs = model(**inputs)
+    # Use the mean of the last hidden state for embeddings
+    return outputs.last_hidden_state.mean(dim=1).squeeze().numpy()  # Mean pooling
 
 # Split raw data into chunks (e.g., by paragraphs)
 show_data_chunks = show_data.split('\n\n')  # Split by double newlines
 
 # Convert each chunk to embeddings
-embeddings = np.array([get_embeddings(chunk) for chunk in show_data_chunks])
-
-# Ensure embeddings are valid
-if embeddings.shape[0] == 0 or embeddings.shape[1] == 0:
-    raise ValueError("Embeddings could not be generated.")
+embeddings = [get_embeddings(chunk) for chunk in show_data_chunks]
+embeddings = np.array(embeddings)
 
 # Create a FAISS index
 dim = embeddings.shape[1]  # Get the dimensionality of the embeddings
@@ -34,13 +40,13 @@ index.add(embeddings)  # Add embeddings to the FAISS index
 
 # Function to search the knowledge base
 def search(query):
+    # Get the embedding of the query
     query_embedding = get_embeddings(query).reshape(1, -1)
+    # Perform a search in the FAISS index
     D, I = index.search(query_embedding, k=1)  # k=1 for the closest result
-    
-    if I[0][0] == -1:  # If no match is found
-        return "No relevant results found."
-    
-    return show_data_chunks[I[0][0]]
+    # Retrieve the corresponding chunk of raw data
+    answer = show_data_chunks[I[0][0]]
+    return answer
 
 # API route for the chatbot
 @app.route("/chat", methods=["POST"])
