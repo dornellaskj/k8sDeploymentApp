@@ -1,0 +1,6 @@
+Build an image locally:
+      docker build -t chat-bot .
+      requires a Dockerfile
+      docker save chat-bot > chat-bot.tar
+      sudo microk8s ctr image import chat-bot.tar
+      microk8s ctr images ls | grep "chat"
