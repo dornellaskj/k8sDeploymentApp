@@ -24,10 +24,17 @@ with open("show_data.txt", "r") as f:
 # Convert each chunk to embeddings
 embeddings = np.array([get_embeddings(chunk) for chunk in show_data_chunks])
 
+# Add this part after creating the embeddings
+print(f"Total number of chunks created: {len(show_data_chunks)}")
+print(f"Total number of embeddings created: {len(embeddings)}")
+
 # Create FAISS index
 dim = embeddings.shape[1]  # Get embedding dimension
 index = faiss.IndexFlatL2(dim)
 index.add(embeddings)  # Add embeddings to FAISS
+
+
+
 
 
 # Function to search the knowledge base
@@ -35,6 +42,7 @@ def search(query, threshold=10.0):  # Adjust the threshold as needed
     query_embedding = get_embeddings(query).reshape(1, -1)
     D, I = index.search(query_embedding, k=1)  # k=1 for the closest result
 
+    print(f"query distance: {D[0][0]}")
     # Check if the closest match is above the threshold (too far away)
     if D[0][0] > threshold:
         return "No relevant results found."
