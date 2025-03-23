@@ -23,7 +23,7 @@ with open("show_data.txt", "r") as f:
 
 # Convert each chunk to embeddings
 for chunk in show_data_chunks:
-    inputs.add(get_embeddings(chunk))
+    inputs.append(get_embeddings(chunk))
 
 # Add this part after creating the embeddings
 print(f"Total number of inputs created: {len(inputs)}")
