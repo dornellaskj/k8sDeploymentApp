@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: chatbot
-        image: chat-bot
-        #imagePullPolicy: Never
+        image: chat-bot:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 5000
         resources:
