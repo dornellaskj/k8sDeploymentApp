@@ -1,4 +1,6 @@
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from sentence_transformers import SentenceTransformer
+import faiss
+import numpy as np
 from flask import Flask, request, jsonify
 
 # Initialize Flask app
@@ -8,31 +10,44 @@ app = Flask(__name__)
 with open('show_data.txt', 'r') as f:
     show_data = f.read()
 
-modelName = 'facebook/blenderbot-400M-distill'
-model = AutoModelForSeq2SeqLM.from_pretrained(modelName)
-tokenizer = AutoTokenizer.from_pretrained(modelName)
-inputs = []
+# Load a pre-trained sentence transformer model
+model = SentenceTransformer('all-MiniLM-L6-v2')  # Optimized for embeddings
+
 # Function to convert text to embeddings
 def get_embeddings(text):
-    return tokenizer.encode_plus(text, return_tensors='pt')
+    return model.encode(text, convert_to_numpy=True)
 
 # Load and preprocess data
 with open("show_data.txt", "r") as f:
     show_data_chunks = f.read().split("\n\n")  # Splitting into chunks
 
 # Convert each chunk to embeddings
-for chunk in show_data_chunks
-    inputs.add(get_embeddings(chunk))
+embeddings = np.array([get_embeddings(chunk) for chunk in show_data_chunks])
 
 # Add this part after creating the embeddings
-print(f"Total number of inputs created: {len(inputs)}")
+print(f"Total number of chunks created: {len(show_data_chunks)}")
+print(f"Total number of embeddings created: {len(embeddings)}")
+
+# Create FAISS index
+dim = embeddings.shape[1]  # Get embedding dimension
+index = faiss.IndexFlatL2(dim)
+index.add(embeddings)  # Add embeddings to FAISS
+
+
+
 
 
 # Function to search the knowledge base
-def search(query):    
-    query_embedding = get_embeddings(query)
-    outputs = model.generate(**inputs)
-    return tokenizer.decode(outputs[0], skip_special_tokens = True).strip()
+def search(query, threshold=10.0):  # Adjust the threshold as needed
+    query_embedding = get_embeddings(query).reshape(1, -1)
+    D, I = index.search(query_embedding, k=1)  # k=1 for the closest result
+
+    print(f"query distance: {D[0][0]}")
+    # Check if the closest match is above the threshold (too far away)
+    if D[0][0] > threshold:
+        return "No relevant results found."
+
+    return show_data_chunks[I[0][0]]
 
 # API route for the chatbot
 @app.route("/chat", methods=["POST"])
@@ -41,6 +56,7 @@ def chat():
         # Get user input from the request
         data = request.json
         user_input = data.get("message", "").strip()
+
         # Check if message is empty
         if not user_input:
             return jsonify({"response": "Please provide a message."})
