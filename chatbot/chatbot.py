@@ -12,6 +12,7 @@ modelName = 'facebook/blenderbot-400M-distill'
 model = AutoModelForSeq2SeqLM.from_pretrained(modelName)
 tokenizer = AutoTokenizer.from_pretrained(modelName)
 inputs = []
+show_data_chunks = []
 # Function to convert text to embeddings
 def get_embeddings(text):
     return tokenizer.encode_plus(text, return_tensors='pt')
@@ -21,7 +22,7 @@ with open("show_data.txt", "r") as f:
     show_data_chunks = f.read().split("\n\n")  # Splitting into chunks
 
 # Convert each chunk to embeddings
-for chunk in show_data_chunks
+for chunk in show_data_chunks:
     inputs.add(get_embeddings(chunk))
 
 # Add this part after creating the embeddings
