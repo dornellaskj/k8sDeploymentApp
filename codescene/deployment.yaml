@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codescene-deployment
+  labels:
+    app: codescene
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: codescene
+  template:
+    metadata:
+      labels:
+        app: codescene
+    spec:
+      containers:
+      - name: codescene-container
+        image: codescene/codescene:7.10.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENV_VAR_NAME
+          value: "value"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
