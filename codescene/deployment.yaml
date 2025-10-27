@@ -20,8 +20,18 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: ENV_VAR_NAME
-          value: "value"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres_password
+        - name: DATABASE_URL
+          value: "jdbc:postgresql://10.152.183.44:5432/postgres?user=$(POSTGRES_USER)&password=$(POSTGRES_PASSWORD)"
         resources:
           limits:
             memory: "512Mi"
@@ -29,3 +39,10 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "250m"
+        volumeMounts:
+        - name: codescene-data
+          mountPath: /codescene/data
+      volumes:
+      - name: codescene-data
+        persistentVolumeClaim:
+          claimName: codescene-pvc
