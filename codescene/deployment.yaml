@@ -34,11 +34,11 @@ spec:
           value: "jdbc:postgresql://10.152.183.44:5432/postgres?user=$(POSTGRES_USER)&password=$(POSTGRES_PASSWORD)"
         resources:
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "2Gi"
+            cpu: "1000m"
           requests:
-            memory: "256Mi"
-            cpu: "250m"
+            memory: "1Gi"
+            cpu: "500m"
         volumeMounts:
         - name: codescene-data
           mountPath: /codescene/data
