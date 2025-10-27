@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: codescene-container
-        image: codescene/codescene:7.10.0
+        image: codescene/codescene:7.2.0
         ports:
         - containerPort: 80
         env:
