@@ -19,29 +19,29 @@ spec:
         image: codescene/codescene:7.2.0
         ports:
         - containerPort: 3003
-        env:
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: postgres-secret
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: postgres-secret
-              key: POSTGRES_PASSWORD
-        - name: DATABASE_URL
-          value: "jdbc:postgresql://10.152.183.44:5432/postgres?user=$(POSTGRES_USER)&password=$(POSTGRES_PASSWORD)"
+        # env:
+        # - name: POSTGRES_USER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: postgres-secret
+        #       key: POSTGRES_USER
+        # - name: POSTGRES_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: postgres-secret
+        #       key: POSTGRES_PASSWORD
+        # - name: DATABASE_URL
+        #   value: "jdbc:postgresql://10.152.183.44:5432/codescene?user=$(POSTGRES_USER)&password=$(POSTGRES_PASSWORD)"
         resources:
           limits:
-            memory: "2Gi"
-            cpu: "1000m"
+            memory: "3Gi"
+            cpu: "2000m"
           requests:
             memory: "1Gi"
             cpu: "500m"
         volumeMounts:
         - name: codescene-data
-          mountPath: /codescene/data
+          mountPath: /app/data
       volumes:
       - name: codescene-data
         persistentVolumeClaim:
