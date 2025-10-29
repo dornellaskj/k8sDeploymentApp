@@ -16,8 +16,7 @@ metadata:
   name: codescene-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
+    - ReadWriteOnce  
   resources:
     requests:
       storage: 10Gi
