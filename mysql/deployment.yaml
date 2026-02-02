@@ -24,14 +24,14 @@ spec:
               key: password
         ports:
         - containerPort: 3306
-          name: mysql3
+          name: mysql
         volumeMounts:
-        - name: mysql3-persistent-storage
+        - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
       volumes:
-      - name: mysql3-persistent-storage
+      - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql3-pv-claim
+          claimName: mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service
