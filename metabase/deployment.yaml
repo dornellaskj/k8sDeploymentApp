@@ -19,8 +19,6 @@ spec:
           ports:
             - containerPort: 3000
           env:
-            - name: MB_DB_CONNECTION_URI
-              value: "mysql://$(USER):$(PASS)@$(HOST):$(PORT)/$(DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
             - name: DBNAME
               value: "jira"
             - name: PORT
@@ -40,3 +38,5 @@ spec:
                 secretKeyRef:
                   name: metabase-secrets
                   key:  MB_DB_DBNAME
+            - name: MB_DB_CONNECTION_URI
+              value: "mysql://$(USER):$(PASS)@$(HOST):$(PORT)/$(DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
