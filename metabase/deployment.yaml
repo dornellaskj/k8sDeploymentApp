@@ -21,8 +21,6 @@ spec:
           env:
             - name: MB_DB_CONNECTION_URI
               value: "mysql://$(USER):$(PASS)@$(HOST):$(PORT)/$(DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
-            - name: MB_DB_TYPE
-              value: "mysql"
             - name: DBNAME
               value: "jira"
             - name: PORT
