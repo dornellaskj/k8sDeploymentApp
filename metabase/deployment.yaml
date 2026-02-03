@@ -20,24 +20,24 @@ spec:
             - containerPort: 3000
           env:
             - name: MB_DB_CONNECTION_URI
-              value: "mysql://$(MB_DB_USER):$(MB_DB_PASS)@$(MB_DB_HOST):$(MB_DB_PORT)/$(MB_DB_DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
+              value: "mysql://$(USER):$(PASS)@$(HOST):$(PORT)/$(DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
             - name: MB_DB_TYPE
               value: "mysql"
-            - name: MB_DB_DBNAME
+            - name: DBNAME
               value: "jira"
-            - name: MB_DB_PORT
+            - name: PORT
               value: "3306"
-            - name: MB_DB_USER
+            - name: USER
               valueFrom:
                 secretKeyRef:
                   name: metabase-secrets
                   key: MB_DB_USER
-            - name: MB_DB_PASS
+            - name: PASS
               valueFrom:
                 secretKeyRef:
                   name: metabase-secrets
                   key: MB_DB_PASS
-            - name: MB_DB_HOST
+            - name: HOST
               valueFrom:
                 secretKeyRef:
                   name: metabase-secrets
