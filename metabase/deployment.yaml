@@ -19,6 +19,8 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: MB_DB_CONNECTION_URI
+              value: "mysql://$(MB_DB_USER):$(MB_DB_PASS)@$(MB_DB_HOST):$(MB_DB_PORT)/$(MB_DB_DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
             - name: MB_DB_TYPE
               value: "mysql"
             - name: MB_DB_DBNAME
