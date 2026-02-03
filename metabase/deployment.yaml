@@ -39,4 +39,4 @@ spec:
                   name: metabase-secrets
                   key:  MB_DB_DBNAME
             - name: MB_DB_CONNECTION_URI
-              value: "mysql://$(USER):$(PASS)@$(HOST):$(PORT)/$(DBNAME)?allowPublicKeyRetrieval=true&useSSL=false"
+              value: "mysql://$(USER):$(PASS)@mysql:$(PORT)/jira?allowPublicKeyRetrieval=true&useSSL=false"
