@@ -1,0 +1,36 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "metabase-reset-db",
+    "namespace": "default"
+  },
+  "spec": {
+    "template": {
+      "spec": {
+        "nodeName": "kevin-ubuntu",
+        "restartPolicy": "Never",
+        "containers": [
+          {
+            "name": "reset-db",
+            "image": "mysql:8.0.36",
+            "command": [
+              "sh", "-c",
+              "mysql -h mysql -u $USER -p$PASS -e 'DROP DATABASE IF EXISTS jira; CREATE DATABASE jira;'"
+            ],
+            "env": [
+              {
+                "name": "USER",
+                "valueFrom": { "secretKeyRef": { "key": "MB_DB_USER", "name": "metabase-secrets" } }
+              },
+              {
+                "name": "PASS",
+                "valueFrom": { "secretKeyRef": { "key": "MB_DB_PASS", "name": "metabase-secrets" } }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
