@@ -13,7 +13,7 @@
         "containers": [
           {
             "name": "migrate",
-            "image": "metabase/metabase:latest",
+            "image": "metabase/metabase:v0.60.3.2",
             "command": ["java", "-jar", "/app/metabase.jar", "migrate", "down"],
             "env": [
               {
