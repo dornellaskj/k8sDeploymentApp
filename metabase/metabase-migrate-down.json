@@ -13,8 +13,8 @@
         "containers": [
           {
             "name": "migrate",
-            "image": "metabase/metabase:v0.56.7",
-            "command": ["java", "-jar", "/app/metabase.jar", "migrate", "down"],
+            "image": "metabase/metabase:v0.59.8",
+            "command": ["java", "--add-opens", "java.base/java.nio=ALL-UNNAMED", "-jar", "/app/metabase.jar", "migrate", "down"],
             "env": [
               {
                 "name": "USER",
