@@ -14,7 +14,7 @@
           {
             "name": "migrate",
             "image": "metabase/metabase:v0.53.8",
-            "args": ["migrate", "down"],
+            "command": ["java", "-jar", "/app/metabase.jar", "migrate", "down"],
             "env": [
               {
                 "name": "USER",
