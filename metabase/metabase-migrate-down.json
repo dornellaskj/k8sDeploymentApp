@@ -1,0 +1,41 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "metabase-migrate-down",
+    "namespace": "default"
+  },
+  "spec": {
+    "template": {
+      "spec": {
+        "nodeName": "kevin-ubuntu",
+        "restartPolicy": "Never",
+        "containers": [
+          {
+            "name": "migrate",
+            "image": "metabase/metabase:v0.53.8",
+            "args": ["migrate", "down"],
+            "env": [
+              {
+                "name": "USER",
+                "valueFrom": { "secretKeyRef": { "key": "MB_DB_USER", "name": "metabase-secrets" } }
+              },
+              {
+                "name": "PASS",
+                "valueFrom": { "secretKeyRef": { "key": "MB_DB_PASS", "name": "metabase-secrets" } }
+              },
+              {
+                "name": "HOST",
+                "valueFrom": { "secretKeyRef": { "key": "MB_DB_DBNAME", "name": "metabase-secrets" } }
+              },
+              {
+                "name": "MB_DB_CONNECTION_URI",
+                "value": "mysql://$(USER):$(PASS)@mysql:3306/jira?allowPublicKeyRetrieval=true&useSSL=false"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
