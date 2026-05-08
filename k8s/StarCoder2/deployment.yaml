@@ -16,7 +16,7 @@ spec:
         kubernetes.io/hostname: kevin-ubuntu
       containers:
       - name: vllm
-        image: vllm/vllm-openai:0.4.2-cuda12
+        image: vllm/vllm/vllm-openai:latest-cuda12
         args:
           - "--model=bigcode/starcoder2-7b"
           - "--host=0.0.0.0"
