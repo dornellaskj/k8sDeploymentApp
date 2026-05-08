@@ -16,7 +16,7 @@ spec:
         kubernetes.io/hostname: kevin-ubuntu
       containers:
       - name: localai
-        image: quay.io/go-skynet/local-ai:latest-cublas-cuda12
+        image: quay.io/go-skynet/local-ai:latest-cublas
         env:
           - name: MODELS_PATH
             value: /models
