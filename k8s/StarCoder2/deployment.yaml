@@ -1,37 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vllm
+  name: localai
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vllm
+      app: localai
   template:
     metadata:
       labels:
-        app: vllm
+        app: localai
     spec:
       nodeSelector:
         kubernetes.io/hostname: kevin-ubuntu
       containers:
-      - name: vllm
-        image: vllm/vllm/vllm-openai:latest-cuda12
-        args:
-          - "--model=bigcode/starcoder2-7b"
-          - "--host=0.0.0.0"
-          - "--tensor-parallel-size=1"
+      - name: localai
+        image: localai/localai:latest-cuda
+        env:
+          - name: MODELS_PATH
+            value: /models
         ports:
-          - containerPort: 8000
+          - containerPort: 8080
         resources:
           limits:
             nvidia.com/gpu: 1
-        env:
-          - name: HF_HOME
-            value: /root/.cache/huggingface
         volumeMounts:
-          - name: hf-cache
-            mountPath: /root/.cache/huggingface
+          - name: models
+            mountPath: /models
       volumes:
-        - name: hf-cache
+        - name: models
           emptyDir: {}

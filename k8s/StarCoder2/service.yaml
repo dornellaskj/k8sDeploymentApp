@@ -1,13 +1,12 @@
-#------Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: vllm
+  name: localai
 spec:
   type: LoadBalancer
   selector:
-    app: vllm
+    app: localai
   ports:
     - name: http
-      port: 8000
-      targetPort: 8000
+      port: 8080
+      targetPort: 8080
