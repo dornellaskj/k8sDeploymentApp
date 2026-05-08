@@ -1,53 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: starcoder2-7b
-  labels:
-    app: starcoder2-7b
+  name: vllm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: starcoder2-7b
+      app: vllm
   template:
     metadata:
       labels:
-        app: starcoder2-7b
+        app: vllm
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: kevin-ubuntu
       containers:
-        - name: ollama
-          image: ollama/ollama:latest
-          ports:
-            - containerPort: 11434
-          resources:
-            limits:
-              nvidia.com/gpu: 1
-          volumeMounts:
-            - name: ollama-data
-              mountPath: /root/.ollama
-          command: ["/bin/sh"]
-          args:
-            - "-c"
-            - |
-              ollama serve &
-              sleep 5
-              ollama pull starcoder2:7b
-              wait
+      - name: vllm
+        image: vllm/vllm-openai:latest
+        args:
+          - "--model=bigcode/starcoder2-7b"
+          - "--host=0.0.0.0"
+        ports:
+          - containerPort: 8000
+        env:
+          - name: HF_HOME
+            value: /root/.cache/huggingface
+        volumeMounts:
+          - name: hf-cache
+            mountPath: /root/.cache/huggingface
       volumes:
-        - name: ollama-data
+        - name: hf-cache
           emptyDir: {}
----
+#------Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: starcoder2-7b
+  name: vllm
 spec:
+  type: LoadBalancer
   selector:
-    app: starcoder2-7b
+    app: vllm
   ports:
     - name: http
-      port: 11434
-      targetPort: 11434
-  type: LoadBalancer
+      port: 8000
+      targetPort: 8000
