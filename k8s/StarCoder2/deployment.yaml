@@ -30,4 +30,5 @@ spec:
             mountPath: /models
       volumes:
         - name: models
-          emptyDir: {}
+          configMap:
+          name: localai-models
