@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: starcoder2-7b
+  labels:
+    app: starcoder2-7b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: starcoder2-7b
+  template:
+    metadata:
+      labels:
+        app: starcoder2-7b
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: kevin-ubuntu
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          ports:
+            - containerPort: 11434
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: ollama-data
+              mountPath: /root/.ollama
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |
+              ollama serve &
+              sleep 5
+              ollama pull starcoder2:7b
+              wait
+      volumes:
+        - name: ollama-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: starcoder2-7b
+spec:
+  selector:
+    app: starcoder2-7b
+  ports:
+    - name: http
+      port: 11434
+      targetPort: 11434
+  type: LoadBalancer
