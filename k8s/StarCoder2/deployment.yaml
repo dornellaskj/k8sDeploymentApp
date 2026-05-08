@@ -12,14 +12,21 @@ spec:
       labels:
         app: vllm
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: kevin-ubuntu
+        gpu: "true"
       containers:
       - name: vllm
         image: vllm/vllm-openai:latest
         args:
           - "--model=bigcode/starcoder2-7b"
           - "--host=0.0.0.0"
+          - "--tensor-parallel-size=1"
         ports:
           - containerPort: 8000
+        resources:
+          limits:
+            nvidia.com/gpu: 1
         env:
           - name: HF_HOME
             value: /root/.cache/huggingface
