@@ -1,0 +1,13 @@
+#------Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm
+spec:
+  type: LoadBalancer
+  selector:
+    app: vllm
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
