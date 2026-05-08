@@ -29,6 +29,6 @@ spec:
           - name: models
             mountPath: /models
       volumes:
-        - name: models
-          configMap:
-            name: localai-models
+          - name: models
+            persistentVolumeClaim:
+              claimName: localai-models-pvc
