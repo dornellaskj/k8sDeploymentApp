@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: localai-models
+data:
+  starcoder2.yaml: |
+    name: starcoder2
+    backend: transformers
+    parameters:
+      model: bigcode/starcoder2-7b
