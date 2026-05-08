@@ -31,4 +31,4 @@ spec:
       volumes:
         - name: models
           configMap:
-          name: localai-models
+            name: localai-models
