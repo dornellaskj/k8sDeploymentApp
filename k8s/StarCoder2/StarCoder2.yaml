@@ -5,6 +5,6 @@ metadata:
 data:
   starcoder2.yaml: |
     name: starcoder2
-    backend: transformers
+    backend: llama-cpp
     parameters:
-      model: bigcode/starcoder2-7b
+      model: TheBloke/StarCoder2-7B-GGUF
