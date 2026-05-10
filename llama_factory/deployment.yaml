@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-factory
+  labels:
+    app: llama-factory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llama-factory
+  template:
+    metadata:
+      labels:
+        app: llama-factory
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: kevin-ubuntu   # pin to your RTX 2070 node
+      containers:
+        - name: llama-factory
+          image: hiyouga/llama-factory:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 7860
+          resources:
+            limits:
+              nvidia.com/gpu: 1                # request 1 GPU
+          volumeMounts:
+            - name: llama-factory-data
+              mountPath: /workspace            # datasets, checkpoints, outputs
+      volumes:
+        - name: llama-factory-data
+          persistentVolumeClaim:
+            claimName: llama-factory-pvc
+
