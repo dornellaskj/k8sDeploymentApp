@@ -19,7 +19,7 @@ spec:
         image: ollama/ollama:latest
         env:
         - name: num_ctx
-          value: "262144"
+          value: "8192"
         ports:
           - containerPort: 11434
         resources:
