@@ -18,7 +18,7 @@ spec:
       - name: ollama
         image: ollama/ollama:latest
         env:
-        - name: OLLAMA_MAX_CONTEXT
+        - name: OLLAMA_NUM_CTX
           value: "262144"
         ports:
           - containerPort: 11434
