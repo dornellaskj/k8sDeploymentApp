@@ -30,9 +30,9 @@ spec:
             limits:
               nvidia.com/gpu: 1
           volumeMounts:
-            - name: llama-factory-data
+            - name: localai-models-data
               mountPath: /workspace
       volumes:
-        - name: llama-factory-data
+        - name: localai-models-data
           persistentVolumeClaim:
-            claimName: llama-factory-pvc
+            claimName: localai-models-pvc
