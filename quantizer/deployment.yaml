@@ -18,7 +18,7 @@ spec:
         kubernetes.io/hostname: kevin-ubuntu   # GPU node
       containers:
         - name: quantizer
-          image: ghcr.io/ggerganov/llama.cpp:b3218
+          image: image: ghcr.io/ggerganov/llama.cpp:server-cuda
           imagePullPolicy: IfNotPresent
           command: ["/bin/bash", "-c"]
           args:
