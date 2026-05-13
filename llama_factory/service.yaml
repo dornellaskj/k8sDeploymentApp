@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: llama-factory
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: llama-factory
   ports:
