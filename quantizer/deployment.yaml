@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantizer
+  labels:
+    app: quantizer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantizer
+  template:
+    metadata:
+      labels:
+        app: quantizer
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: kevin-ubuntu   # GPU node
+      containers:
+        - name: quantizer
+          image: ghcr.io/ggerganov/llama.cpp:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              echo "Quantization pod ready."
+              echo "Use kubectl exec to run convert-hf-to-gguf or quantize."
+              sleep infinity
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: llama-factory-data
+              mountPath: /workspace
+      volumes:
+        - name: llama-factory-data
+          persistentVolumeClaim:
+            claimName: llama-factory-pvc
