@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-orchestrator-pvc
+  namespace: ollama
+  labels:
+    app: ollama-orchestrator
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  # Remove storageClassName if you want to use your cluster default,
+  # or replace with your specific storage class (e.g. local-path, longhorn, etc.)
+  # storageClassName: local-path

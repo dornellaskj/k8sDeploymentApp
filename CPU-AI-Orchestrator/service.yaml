@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-orchestrator-svc
+  namespace: ollama
+  labels:
+    app: ollama-orchestrator
+    role: orchestrator
+  annotations:
+    # ── MetalLB (most common bare-metal LB) ───────────────────────────────
+    # Uncomment and set your IP pool name if using MetalLB:
+    # metallb.universe.tf/address-pool: default
+
+    # ── If you want a specific static IP from your pool: ──────────────────
+    # metallb.universe.tf/loadBalancerIPs: 192.168.1.200
+spec:
+  type: LoadBalancer
+  selector:
+    app: ollama-orchestrator
+  ports:
+    - name: ollama-api
+      protocol: TCP
+      port: 11434
+      targetPort: 11434
+  # Ensure traffic always goes to the node running this pod.
+  # "Local" preserves the client source IP and avoids extra hops
+  # since this is a single-node pinned deployment anyway.
+  externalTrafficPolicy: Local
