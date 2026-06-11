@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-orchestrator
+  namespace: ollama
+  labels:
+    app: ollama-orchestrator
+    role: orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama-orchestrator
+  template:
+    metadata:
+      labels:
+        app: ollama-orchestrator
+        role: orchestrator
+    spec:
+      # Pin this deployment to the master node
+      nodeName: kevin-ubuntu
+
+      # Prevent GPU workloads from landing here (optional but recommended)
+      tolerations: []
+
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          ports:
+            - containerPort: 11434
+              name: ollama-api
+
+          env:
+            # ── Orchestrator identity ──────────────────────────────────────
+            # This is read by your orchestration layer (e.g. LangGraph,
+            # custom Python service) to know this instance is the planner.
+            - name: OLLAMA_ROLE
+              value: "orchestrator"
+
+            # ── Worker endpoint ────────────────────────────────────────────
+            # Point this at the LoadBalancer IP/hostname of your GPU worker
+            # service once it's deployed. Your orchestration code reads this
+            # to know where to send delegated tasks.
+            - name: OLLAMA_WORKER_ENDPOINT
+              value: "http://ollama-worker-svc.ollama.svc.cluster.local:11434"
+
+            # ── Performance tuning ─────────────────────────────────────────
+            # Run fully on CPU — no GPU offloading
+            - name: OLLAMA_NUM_GPU
+              value: "0"
+
+            # Use all 12 cores for inference threads
+            - name: OLLAMA_NUM_THREAD
+              value: "12"
+
+            # Keep the model loaded in RAM between requests (seconds).
+            # -1 = keep loaded indefinitely (good for an always-on orchestrator)
+            - name: OLLAMA_KEEP_ALIVE
+              value: "-1"
+
+            # Set a conservative default context. Your orchestration layer
+            # should override per-request via the API num_ctx parameter.
+            # At 32GB RAM with a 14B Q4 model, 32K is safe. Bump to 65536
+            # once you upgrade to 128GB.
+            - name: OLLAMA_NUM_CTX
+              value: "32768"
+
+            # Allow larger payloads for long-context requests
+            - name: OLLAMA_MAX_REQUEST_SIZE
+              value: "536870912"  # 512MB
+
+          resources:
+            requests:
+              memory: "24Gi"
+              cpu: "6"
+            limits:
+              memory: "30Gi"
+              cpu: "12"
+
+          volumeMounts:
+            - name: ollama-storage
+              mountPath: /root/.ollama
+
+          # Give the model time to load before serving traffic
+          readinessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
+
+      volumes:
+        - name: ollama-storage
+          persistentVolumeClaim:
+            claimName: ollama-orchestrator-pvc
