@@ -30,6 +30,13 @@ spec:
             cpu: "4"
             memory: "16Gi"
             nvidia.com/gpu: 2
+        env:
+          # Expose both GPUs to the container runtime layer
+          - name: NVIDIA_VISIBLE_DEVICES
+            value: "all"
+          # Swap the indices: This forces Ollama to load and process on the 5060 Ti first
+          - name: CUDA_VISIBLE_DEVICES
+            value: "1,0"
         volumeMounts:
           - name: models
             mountPath: /root/.ollama
