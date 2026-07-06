@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: defectdojo-valkey
+  namespace: defectdojo
+  labels:
+    app: defectdojo-valkey
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: defectdojo-valkey
+  template:
+    metadata:
+      labels:
+        app: defectdojo-valkey
+    spec:
+      containers:
+        - name: valkey
+          # Valkey is the message broker used by Celery (Redis-compatible)
+          image: valkey/valkey:8
+          ports:
+            - containerPort: 6379
+          readinessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

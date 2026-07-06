@@ -1,0 +1,142 @@
+# DefectDojo main application — two containers per Pod (sidecar pattern):
+#   1. uwsgi  — Django app server (defectdojo-django image)
+#   2. nginx  — Reverse proxy + static file server (defectdojo-nginx image)
+#
+# The nginx container proxies dynamic requests to uwsgi via localhost:8080
+# and serves uploaded media files from the shared media volume.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: defectdojo
+  namespace: defectdojo
+  labels:
+    app: defectdojo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: defectdojo
+  template:
+    metadata:
+      labels:
+        app: defectdojo
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z 192.168.86.159 5432; do
+                echo "Waiting for PostgreSQL..."; sleep 3
+              done
+        - name: wait-for-valkey
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z defectdojo-valkey 6379; do
+                echo "Waiting for Valkey..."; sleep 3
+              done
+      containers:
+        # ── uWSGI (Django application server) ─────────────────────────────
+        - name: uwsgi
+          image: defectdojo/defectdojo-django:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: uwsgi
+          env:
+            - name: DD_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_DATABASE_URL
+            - name: DD_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_SECRET_KEY
+            - name: DD_CREDENTIAL_AES_256_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_CREDENTIAL_AES_256_KEY
+            - name: DD_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_CELERY_BROKER_URL
+            - name: DD_ALLOWED_HOSTS
+              value: "*"
+            - name: DD_DEBUG
+              value: "False"
+            - name: DD_DJANGO_METRICS_ENABLED
+              value: "True"
+            - name: DD_UWSGI_NUM_OF_PROCESSES
+              value: "2"
+            - name: DD_UWSGI_NUM_OF_THREADS
+              value: "2"
+          volumeMounts:
+            - name: media
+              mountPath: /app/media
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+
+        # ── NGINX (web server / reverse proxy) ────────────────────────────
+        - name: nginx
+          image: defectdojo/defectdojo-nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: NGINX_METRICS_ENABLED
+              value: "True"
+            # nginx proxies to uwsgi on localhost inside the same Pod
+            - name: UWSGI_PASS
+              value: "localhost:8080"
+          volumeMounts:
+            - name: media
+              mountPath: /app/media
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: defectdojo-media-pvc
