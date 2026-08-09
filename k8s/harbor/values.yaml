@@ -1,7 +1,9 @@
 expose:
-  type: clusterIP
+  type: loadBalancer
   tls:
     enabled: false
+  loadBalancer:
+    name: harbor
 
 externalURL: http://harbor.kevin.local
 
