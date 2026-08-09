@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: defectdojo-media-pvc
+  namespace: defectdojo
+spec:
+  # ReadWriteMany required so both the nginx and django pods can mount simultaneously.
+  # If your storage class does not support RWX, use ReadWriteOnce and co-locate
+  # nginx + uwsgi in the same Pod (sidecar pattern).
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi

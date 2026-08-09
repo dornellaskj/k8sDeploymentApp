@@ -1,0 +1,71 @@
+# Celery Beat — schedules periodic tasks such as SLA breach notifications
+# and upcoming engagement reminders. Only one replica should ever run.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: defectdojo-celery-beat
+  namespace: defectdojo
+  labels:
+    app: defectdojo-celery-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: defectdojo-celery-beat
+  template:
+    metadata:
+      labels:
+        app: defectdojo-celery-beat
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z 192.168.86.159 5432; do
+                echo "Waiting for PostgreSQL..."; sleep 3
+              done
+        - name: wait-for-valkey
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z defectdojo-valkey 6379; do
+                echo "Waiting for Valkey..."; sleep 3
+              done
+      containers:
+        - name: celery-beat
+          image: defectdojo/defectdojo-django:latest
+          imagePullPolicy: IfNotPresent
+          entrypoint: ["/entrypoint-celery-beat.sh"]
+          env:
+            - name: DD_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_DATABASE_URL
+            - name: DD_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_SECRET_KEY
+            - name: DD_CREDENTIAL_AES_256_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_CREDENTIAL_AES_256_KEY
+            - name: DD_CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: defectdojo-secrets
+                  key: DD_CELERY_BROKER_URL
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
