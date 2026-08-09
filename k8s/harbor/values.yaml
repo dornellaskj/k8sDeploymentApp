@@ -1,0 +1,66 @@
+expose:
+  type: clusterIP
+  tls:
+    enabled: false
+
+externalURL: http://harbor.kevin.local
+
+internalTLS:
+  enabled: false
+
+harborAdminPassword: "Harbor12345"
+
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      existingClaim: harbor-registry-pvc
+    database:
+      existingClaim: harbor-database-pvc
+    redis:
+      existingClaim: harbor-redis-pvc
+    jobservice:
+      jobLog:
+        existingClaim: ""
+        storageClass: local-storage
+        size: 1Gi
+    trivy:
+      existingClaim: ""
+      storageClass: local-storage
+      size: 5Gi
+
+# Pin stateful components to the db-node
+database:
+  internal:
+    nodeSelector:
+      db-node: "true"
+    tolerations:
+    - key: "db-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+redis:
+  internal:
+    nodeSelector:
+      db-node: "true"
+    tolerations:
+    - key: "db-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+registry:
+  nodeSelector:
+    db-node: "true"
+  tolerations:
+  - key: "db-only"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+trivy:
+  enabled: false
+
+metrics:
+  enabled: false

@@ -1,0 +1,45 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: harbor
+  namespace: harbor
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`harbor.kevin.local`)
+      priority: 10
+      services:
+        - name: harbor-portal
+          port: 80
+    - kind: Rule
+      match: Host(`harbor.kevin.local`) && PathPrefix(`/v2/`)
+      priority: 20
+      services:
+        - name: harbor-core
+          port: 80
+    - kind: Rule
+      match: Host(`harbor.kevin.local`) && PathPrefix(`/service/`)
+      priority: 20
+      services:
+        - name: harbor-core
+          port: 80
+    - kind: Rule
+      match: Host(`harbor.kevin.local`) && PathPrefix(`/api/`)
+      priority: 20
+      services:
+        - name: harbor-core
+          port: 80
+    - kind: Rule
+      match: Host(`harbor.kevin.local`) && PathPrefix(`/c/`)
+      priority: 20
+      services:
+        - name: harbor-core
+          port: 80
+    - kind: Rule
+      match: Host(`harbor.kevin.local`) && PathPrefix(`/chartrepo/`)
+      priority: 20
+      services:
+        - name: harbor-core
+          port: 80
