@@ -17,6 +17,13 @@ spec:
       labels:
         app: mongo
     spec:
+      nodeSelector:
+        db-node: "true"
+      tolerations:
+      - key: "db-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       containers:
       - image: arm64v8/mongo:4.4.18
         name: mongo
@@ -62,4 +69,4 @@ spec:
       volumes:
       - name: "mongo-data-dir"
         persistentVolumeClaim:
-          claimName: "mongo-pvc"
+          claimName: "mongo-pvc-dbhot"
