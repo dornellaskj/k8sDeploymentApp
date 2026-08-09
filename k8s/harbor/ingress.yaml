@@ -5,7 +5,7 @@ metadata:
   namespace: harbor
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`harbor.kevin.local`)
@@ -43,3 +43,5 @@ spec:
       services:
         - name: harbor-core
           port: 80
+  tls:
+    secretName: harbor-tls-secret

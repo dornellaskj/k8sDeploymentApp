@@ -1,11 +1,14 @@
 expose:
   type: loadBalancer
   tls:
-    enabled: false
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: harbor-tls-secret
   loadBalancer:
     name: harbor
 
-externalURL: http://harbor.kevin.local
+externalURL: https://harbor.kevin.local
 
 internalTLS:
   enabled: false
