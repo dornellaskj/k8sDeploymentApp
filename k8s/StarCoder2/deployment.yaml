@@ -17,9 +17,6 @@ spec:
       containers:
       - name: ollama
         image: ollama/ollama:latest
-        env:
-        - name: num_ctx
-          value: "8192"
         ports:
           - containerPort: 11434
         resources:
@@ -31,6 +28,8 @@ spec:
             memory: "16Gi"
             nvidia.com/gpu: 2
         env:
+          - name: num_ctx
+            value: "8192"
           # Expose both GPUs to the container runtime layer
           - name: NVIDIA_VISIBLE_DEVICES
             value: "all"

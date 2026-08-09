@@ -68,6 +68,43 @@ spec:
           - "true"
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-jobservice-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/dbhot/harbor/jobservice
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: db-node
+          operator: In
+          values:
+          - "true"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-jobservice
+  namespace: harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: harbor-jobservice-pv
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: harbor-registry-pvc
