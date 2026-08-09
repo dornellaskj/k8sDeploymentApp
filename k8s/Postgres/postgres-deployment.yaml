@@ -12,6 +12,13 @@ spec:
       labels:
         app: postgres
     spec:
+      nodeSelector:
+        db-node: "true"
+      tolerations:
+      - key: "db-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       containers:
       - name: postgres
         image: postgres:15
@@ -39,4 +46,4 @@ spec:
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:
-          claimName: postgres-pvc
+          claimName: postgres-pvc-dbhot
