@@ -13,6 +13,13 @@ spec:
       labels:
         app: mysql
     spec:
+      nodeSelector:
+        db-node: "true"
+      tolerations:
+      - key: "db-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       containers:
       - image: mysql:8.0.36
         name: mysql
@@ -31,7 +38,7 @@ spec:
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: mysql-pv-claim-dbhot
 ---
 apiVersion: v1
 kind: Service
