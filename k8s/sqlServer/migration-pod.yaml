@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mssql-migrate
+spec:
+  # Runs on old node to access the old PVC
+  restartPolicy: Never
+  containers:
+  - name: migrate
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      echo "=== Starting MSSQL data migration ==="
+      echo "Backing up from /old-data to /new-data..."
+      cp -av /old-data/ /new-data/
+      echo "=== Migration complete ==="
+    volumeMounts:
+    - name: old-data
+      mountPath: /old-data
+    - name: new-data
+      mountPath: /new-data
+  volumes:
+  - name: old-data
+    persistentVolumeClaim:
+      claimName: mssql-mssql-0
+  - name: new-data
+    persistentVolumeClaim:
+      claimName: mssql-pvc-dbhot
