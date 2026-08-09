@@ -21,13 +21,47 @@ persistence:
       existingClaim: harbor-redis-pvc
     jobservice:
       jobLog:
-        existingClaim: ""
-        storageClass: local-storage
-        size: 1Gi
+        existingClaim: harbor-jobservice
     trivy:
       existingClaim: ""
       storageClass: local-storage
       size: 5Gi
+
+core:
+  nodeSelector:
+    db-node: "true"
+  tolerations:
+  - key: "db-only"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+jobservice:
+  nodeSelector:
+    db-node: "true"
+  tolerations:
+  - key: "db-only"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+nginx:
+  nodeSelector:
+    db-node: "true"
+  tolerations:
+  - key: "db-only"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+portal:
+  nodeSelector:
+    db-node: "true"
+  tolerations:
+  - key: "db-only"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
 
 # Pin stateful components to the db-node
 database:
