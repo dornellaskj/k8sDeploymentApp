@@ -9,4 +9,4 @@ spec:
   volumeName: ollama-pv-rogue1
   resources:
     requests:
-      storage: 100Gi
+      storage: 30Gi
