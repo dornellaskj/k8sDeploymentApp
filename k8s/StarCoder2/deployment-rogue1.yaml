@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      nodeSelector:
+        db-node: "true"
+      tolerations:
+      - key: "db-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      containers:
+      - name: ollama
+        image: ollama/ollama:latest
+        ports:
+          - containerPort: 11434
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+          limits:
+            cpu: "2000m"
+            memory: "8Gi"
+            nvidia.com/gpu: 1
+        env:
+          - name: num_ctx
+            value: "8192"
+          # Expose both GPUs to the container runtime layer
+          - name: NVIDIA_VISIBLE_DEVICES
+            value: "all"
+          # Swap the indices: This forces Ollama to load and process on the 5060 Ti first
+          - name: CUDA_VISIBLE_DEVICES
+            value: "1,0"
+        volumeMounts:
+          - name: models
+            mountPath: /root/.ollama
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: localai-models-pvc
