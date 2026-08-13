@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ollama
+  name: ollama-rogue1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ollama
+      app: ollama-rogue1
   template:
     metadata:
       labels:
-        app: ollama
+        app: ollama-rogue1
     spec:
       nodeSelector:
         db-node: "true"
@@ -47,4 +47,4 @@ spec:
       volumes:
         - name: models
           persistentVolumeClaim:
-            claimName: localai-models-pvc
+            claimName: ollama-pvc-rogue1
