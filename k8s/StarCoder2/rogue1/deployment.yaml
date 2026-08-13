@@ -40,7 +40,7 @@ spec:
             value: "all"
           # Swap the indices: This forces Ollama to load and process on the 5060 Ti first
           - name: CUDA_VISIBLE_DEVICES
-            value: "1,0"
+            value: "0"
         volumeMounts:
           - name: models
             mountPath: /root/.ollama
