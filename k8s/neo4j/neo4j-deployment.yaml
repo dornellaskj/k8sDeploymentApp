@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      nodeSelector:
+        db-node: "true"
+      tolerations:
+      - key: "db-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      containers:
+      - name: neo4j
+        image: neo4j:5
+        resources:
+          requests:
+            cpu: "1"
+            memory: 4Gi
+          limits:
+            cpu: "4"
+            memory: 8Gi
+        ports:
+        - containerPort: 7474
+        - containerPort: 7687
+        env:
+        - name: NEO4J_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: neo4j-secret
+              key: NEO4J_AUTH
+        volumeMounts:
+        - mountPath: /data
+          name: neo4j-storage
+      volumes:
+      - name: neo4j-storage
+        persistentVolumeClaim:
+          claimName: neo4j-pvc-dbhot

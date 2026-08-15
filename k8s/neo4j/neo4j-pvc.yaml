@@ -1,10 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: localai-models-pvc
+  name: neo4j-pvc-dbhot
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: neo4j-pv-dbhot
   resources:
     requests:
       storage: 50Gi
