@@ -38,6 +38,8 @@ spec:
             secretKeyRef:
               name: neo4j-secret
               key: NEO4J_AUTH
+        - name: NEO4J_server_config_strict__validation_enabled
+          value: "false"
         volumeMounts:
         - mountPath: /data
           name: neo4j-storage
