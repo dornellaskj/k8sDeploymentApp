@@ -13,7 +13,7 @@ spec:
         app: vscode-remote
     spec:
       nodeSelector:
-        kubernetes.io/hostname: kevin-ubuntu # must point at a node with an NVIDIA GPU + device plugin
+        kubernetes.io/hostname: stormtrooper # must point at a node with an NVIDIA GPU + device plugin
       containers:
         - name: vscode-remote
           image: nvidia/cuda:12.4.1-devel-ubuntu22.04
@@ -23,10 +23,10 @@ spec:
           resources:
             requests:
               cpu: "2"
-              memory: "16Gi"
+              memory: "8Gi"
             limits:
               cpu: "2"
-              memory: "16Gi"
+              memory: "8Gi"
               nvidia.com/gpu: 1
           volumeMounts:
             - name: config
