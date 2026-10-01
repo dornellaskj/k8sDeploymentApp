@@ -33,8 +33,7 @@ spec:
               mountPath: /etc/vscode-remote
               readOnly: true
             - name: ssh-key
-              mountPath: /etc/vscode-remote/authorized_keys
-              subPath: authorized_keys
+              mountPath: /etc/vscode-remote-ssh
               readOnly: true
             - name: workspace
               mountPath: /home/coder/workspace

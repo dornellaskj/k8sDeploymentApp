@@ -29,7 +29,7 @@ data:
     fi
 
     mkdir -p /home/coder/.ssh
-    cp /etc/vscode-remote/authorized_keys /home/coder/.ssh/authorized_keys
+    cp /etc/vscode-remote-ssh/authorized_keys /home/coder/.ssh/authorized_keys
     chmod 700 /home/coder/.ssh
     chmod 600 /home/coder/.ssh/authorized_keys
     chown -R coder:coder /home/coder/.ssh
