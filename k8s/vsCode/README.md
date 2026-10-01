@@ -4,7 +4,7 @@ This folder deploys a Kubernetes pod you can connect to from your local **VS Cod
 Desktop** app to run GPU-accelerated development workloads. The pod runs
 `sshd` on a CUDA-enabled Ubuntu image, backed by:
 
-- 2 CPUs / 16Gi RAM (requests and limits)
+- 2 CPUs / 8Gi RAM (requests and limits)
 - 1 NVIDIA GPU (`nvidia.com/gpu: 1` limit — requires the
   [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) installed
   on the cluster)
