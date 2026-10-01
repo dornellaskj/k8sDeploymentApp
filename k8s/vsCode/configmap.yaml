@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vscode-remote-config
+data:
+  sshd_config: |
+    Port 22
+    PermitRootLogin yes
+    PasswordAuthentication yes
+    PubkeyAuthentication yes
+    ChallengeResponseAuthentication no
+    UsePAM yes
+    X11Forwarding no
+    Subsystem sftp /usr/lib/openssh/sftp-server
+  entrypoint.sh: |
+    #!/bin/bash
+    set -euo pipefail
+
+    apt-get update
+    apt-get install -y --no-install-recommends \
+      openssh-server sudo git curl ca-certificates \
+      build-essential python3 python3-pip
+    rm -rf /var/lib/apt/lists/*
+
+    if ! id coder >/dev/null 2>&1; then
+      useradd -m -s /bin/bash -G sudo coder
+      passwd -l coder
+      echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
+    fi
+
+    mkdir -p /home/coder/.ssh
+    cp /etc/vscode-remote/authorized_keys /home/coder/.ssh/authorized_keys
+    chmod 700 /home/coder/.ssh
+    chmod 600 /home/coder/.ssh/authorized_keys
+    chown -R coder:coder /home/coder/.ssh
+
+    mkdir -p /home/coder/workspace
+    chown -R coder:coder /home/coder/workspace
+
+    cp /etc/vscode-remote/sshd_config /etc/ssh/sshd_config
+    ssh-keygen -A
+    mkdir -p /run/sshd
+
+    exec /usr/sbin/sshd -D -e

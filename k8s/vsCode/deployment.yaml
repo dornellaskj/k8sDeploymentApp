@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vscode-remote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vscode-remote
+  template:
+    metadata:
+      labels:
+        app: vscode-remote
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: kevin-ubuntu # must point at a node with an NVIDIA GPU + device plugin
+      containers:
+        - name: vscode-remote
+          image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+          command: ["/bin/bash", "/etc/vscode-remote/entrypoint.sh"]
+          ports:
+            - containerPort: 22
+          resources:
+            requests:
+              cpu: "2"
+              memory: "16Gi"
+            limits:
+              cpu: "2"
+              memory: "16Gi"
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: config
+              mountPath: /etc/vscode-remote
+              readOnly: true
+            - name: ssh-key
+              mountPath: /etc/vscode-remote/authorized_keys
+              subPath: authorized_keys
+              readOnly: true
+            - name: workspace
+              mountPath: /home/coder/workspace
+      volumes:
+        - name: config
+          configMap:
+            name: vscode-remote-config
+            defaultMode: 0755
+        - name: ssh-key
+          secret:
+            secretName: vscode-remote-ssh-key
+            defaultMode: 0400
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: vscode-workspace-pvc
