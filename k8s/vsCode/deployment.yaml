@@ -14,6 +14,7 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: stormtrooper # must point at a node with an NVIDIA GPU + device plugin
+      dnsPolicy: Default # use the node's own resolv.conf for external DNS instead of flaky cluster DNS
       containers:
         - name: vscode-remote
           image: nvidia/cuda:12.4.1-devel-ubuntu22.04
