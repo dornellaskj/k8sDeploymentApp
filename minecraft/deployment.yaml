@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-deployment
+  labels:
+    app: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      nodeName: kevin-ubuntu
+      containers:
+      - name: minecraft
+        image: itzg/minecraft-bedrock-server:latest
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: VERSION
+          value: "LATEST"
+        ports:
+        - containerPort: 19132
+          protocol: UDP
+          name: bedrock
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "6Gi"
+            cpu: "4000m"
+        volumeMounts:
+        - name: minecraft-data
+          mountPath: /data
+      volumes:
+      - name: minecraft-data
+        persistentVolumeClaim:
+          claimName: minecraft-pvc
