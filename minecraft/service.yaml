@@ -4,6 +4,7 @@ metadata:
   name: minecraft-service
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app: minecraft
   ports:
