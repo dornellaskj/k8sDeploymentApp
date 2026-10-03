@@ -31,7 +31,7 @@ data:
       passwd -l coder
       echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
     fi
-    # kubelet pre-creates /home/coder (as root) to host the workspace mount, so useradd -m
+    # kubelet pre-creates /home/coder (as root) to host the PVC mount, so useradd -m
     # finds it already existing and leaves ownership as root:root - fix it explicitly here.
     chown coder:coder /home/coder
 
@@ -40,9 +40,6 @@ data:
     chmod 700 /home/coder/.ssh
     chmod 600 /home/coder/.ssh/authorized_keys
     chown -R coder:coder /home/coder/.ssh
-
-    mkdir -p /home/coder/workspace
-    chown -R coder:coder /home/coder/workspace
 
     cp /etc/vscode-remote/sshd_config /etc/ssh/sshd_config
     ssh-keygen -A

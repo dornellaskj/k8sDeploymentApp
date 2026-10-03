@@ -44,7 +44,7 @@ spec:
               mountPath: /etc/vscode-remote-ssh
               readOnly: true
             - name: workspace
-              mountPath: /home/coder/workspace
+              mountPath: /home/coder
       volumes:
         - name: config
           configMap:

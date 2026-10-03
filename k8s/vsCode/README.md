@@ -8,8 +8,9 @@ Desktop** app to run GPU-accelerated development workloads. The pod runs
 - 1 NVIDIA GPU (`nvidia.com/gpu: 1` limit — requires the
   [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) installed
   on the cluster)
-- A persistent `/home/coder/workspace` volume (`vscode-workspace-pvc`) so your
-  files survive pod restarts
+- A persistent `/home/coder` volume (`vscode-workspace-pvc`) so your entire
+  home directory - files anywhere in it, not just one subfolder - survives pod
+  restarts
 - A `LoadBalancer` service (via MetalLB, see `metallb-config.yaml`) exposing
   SSH on port 22 with an external IP
 
@@ -21,7 +22,7 @@ disabled in `sshd_config` for security.
 | File | Purpose |
 |---|---|
 | `configmap.yaml` | `sshd_config` + the container entrypoint script that installs `sshd`/dev tools and starts the SSH daemon |
-| `pvc.yaml` | Persistent volume claim for `/home/coder/workspace` |
+| `pvc.yaml` | Persistent volume claim for `/home/coder` |
 | `deployment.yaml` | The pod spec (image, resources, GPU, volumes, node selector) |
 | `service.yaml` | `LoadBalancer` service exposing port 22 |
 
@@ -97,7 +98,8 @@ Host vscode-remote-k8s
 1. Open the Command Palette (`Ctrl+Shift+P`)
 2. Run **Remote-SSH: Connect to Host...**
 3. Select `vscode-remote-k8s`
-4. Once connected, open the folder `/home/coder/workspace`
+4. Once connected, open the folder `/home/coder` (or any subfolder under it) -
+   everything under your home directory now persists across pod restarts
 
 You're now running VS Code entirely on the remote pod — the integrated
 terminal, debuggers, and any extensions you install there execute on the
