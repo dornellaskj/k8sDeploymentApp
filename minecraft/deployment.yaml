@@ -24,6 +24,8 @@ spec:
           value: "TRUE"
         - name: VERSION
           value: "LATEST"
+        - name: DIFFICULTY
+          value: "normal"
         ports:
         - containerPort: 19132
           protocol: UDP
