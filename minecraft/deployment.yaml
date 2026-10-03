@@ -14,7 +14,8 @@ spec:
       labels:
         app: minecraft
     spec:
-      nodeName: kevin-ubuntu
+      nodeSelector:
+        kubernetes.io/hostname: kevin-ubuntu
       containers:
       - name: minecraft
         image: itzg/minecraft-bedrock-server:latest
