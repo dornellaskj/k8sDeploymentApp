@@ -28,6 +28,8 @@ spec:
           value: "normal"
         - name: SERVER_PORT
           value: "19132"
+        - name: TRANSPORT
+          value: "raknet"
         ports:
         - containerPort: 19132
           protocol: UDP
