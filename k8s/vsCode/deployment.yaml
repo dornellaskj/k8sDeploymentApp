@@ -31,10 +31,10 @@ spec:
           resources:
             requests:
               cpu: "2"
-              memory: "24Gi"
+              memory: "16Gi"
             limits:
-              cpu: "4"
-              memory: "24Gi"
+              cpu: "8"
+              memory: "32Gi"
               nvidia.com/gpu: 1
           volumeMounts:
             - name: config
