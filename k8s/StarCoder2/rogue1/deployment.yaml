@@ -13,7 +13,7 @@ spec:
         app: ollama-rogue1
     spec:
       nodeSelector:
-        db-node: "true"
+        kubernetes.io/hostname: stormtrooper
       tolerations:
       - key: "db-only"
         operator: "Equal"

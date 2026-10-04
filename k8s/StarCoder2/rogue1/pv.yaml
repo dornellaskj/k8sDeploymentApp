@@ -11,12 +11,12 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /mnt/dbhot/ollama1
+    path: /ollama1
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: db-node
+        - key: kubernetes.io/hostname
           operator: In
           values:
-          - "true"
+          - stormtrooper

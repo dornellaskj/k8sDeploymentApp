@@ -11,7 +11,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /mnt/dbhot/vscode-workspace
+    path: /mnt/backup/vscode-workspace
   nodeAffinity:
     required:
       nodeSelectorTerms:
