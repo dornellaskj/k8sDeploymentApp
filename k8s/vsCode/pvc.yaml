@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vscode-workspace-pvc
+  name: vscode-workspace-pvc-rogue1
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: microk8s-hostpath
   resources:
     requests:
       storage: 50Gi

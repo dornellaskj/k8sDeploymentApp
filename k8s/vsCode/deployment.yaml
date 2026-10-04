@@ -61,4 +61,4 @@ spec:
             defaultMode: 0400
         - name: workspace
           persistentVolumeClaim:
-            claimName: vscode-workspace-pvc
+            claimName: vscode-workspace-pvc-rogue1

@@ -8,7 +8,7 @@ Desktop** app to run GPU-accelerated development workloads. The pod runs
 - 1 NVIDIA GPU (`nvidia.com/gpu: 1` limit — requires the
   [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) installed
   on the cluster)
-- A persistent `/home/coder` volume (`vscode-workspace-pvc`) so your entire
+- A persistent `/home/coder` volume (`vscode-workspace-pvc-rogue1`) so your entire
   home directory - files anywhere in it, not just one subfolder - survives pod
   restarts
 - A `LoadBalancer` service (via MetalLB, see `metallb-config.yaml`) exposing
@@ -117,6 +117,9 @@ This should list the GPU allocated to the pod.
 
 ## Notes
 
+- The previous `vscode-workspace-pvc` claim is retained because its host-local
+  volume is bound to `stormtrooper`. The Rogue claim starts with an empty
+  workspace unless data is migrated separately.
 - To change SSH keys, rotate the secret:
   `kubectl create secret generic vscode-remote-ssh-key --from-file=authorized_keys=... --dry-run=client -o yaml | kubectl replace -f -`
   then restart the pod (`kubectl rollout restart deployment/vscode-remote`).
