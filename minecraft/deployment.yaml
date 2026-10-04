@@ -30,6 +30,8 @@ spec:
           value: "19132"
         - name: TRANSPORT
           value: "raknet"
+        - name: ALLOW_LIST
+          value: "false"
         ports:
         - containerPort: 19132
           protocol: UDP
