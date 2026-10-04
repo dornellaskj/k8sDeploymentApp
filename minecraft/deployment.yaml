@@ -26,6 +26,8 @@ spec:
           value: "LATEST"
         - name: DIFFICULTY
           value: "normal"
+        - name: SERVER_PORT
+          value: "19132"
         ports:
         - containerPort: 19132
           protocol: UDP
