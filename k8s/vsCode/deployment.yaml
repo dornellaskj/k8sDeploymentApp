@@ -14,6 +14,11 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: rogue1 # must point at a node with an NVIDIA GPU + device plugin
+      tolerations:
+        - key: "db-only"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       dnsPolicy: None # node's /etc/resolv.conf is the systemd-resolved stub (127.0.0.53), unreachable from pod netns
       dnsConfig:
         nameservers:
