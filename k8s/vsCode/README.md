@@ -4,7 +4,7 @@ This folder deploys a Kubernetes pod you can connect to from your local **VS Cod
 Desktop** app to run GPU-accelerated development workloads. The pod runs
 `sshd` on a CUDA-enabled Ubuntu image, backed by:
 
-- 2 CPUs / 8Gi RAM (requests and limits)
+- 2-4 CPUs / 24Gi RAM
 - 1 NVIDIA GPU (`nvidia.com/gpu: 1` limit — requires the
   [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) installed
   on the cluster)
@@ -46,7 +46,7 @@ kubectl create secret generic vscode-remote-ssh-key `
 
 ## 3. Update the node selector
 
-`deployment.yaml` pins the pod to `kubernetes.io/hostname: kevin-ubuntu`.
+`deployment.yaml` pins the pod to `kubernetes.io/hostname: rogue1`.
 Change this to the hostname of whichever node in your cluster has the NVIDIA
 GPU and device plugin installed:
 
