@@ -5,7 +5,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: microk8s-hostpath
+  storageClassName: local-storage
+  volumeName: vscode-workspace-pv-rogue1
   resources:
     requests:
       storage: 50Gi

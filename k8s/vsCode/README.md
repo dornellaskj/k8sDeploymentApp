@@ -22,6 +22,7 @@ disabled in `sshd_config` for security.
 | File | Purpose |
 |---|---|
 | `configmap.yaml` | `sshd_config` + the container entrypoint script that installs `sshd`/dev tools and starts the SSH daemon |
+| `pv.yaml` | Local persistent volume pinned to `rogue1` |
 | `pvc.yaml` | Persistent volume claim for `/home/coder` |
 | `deployment.yaml` | The pod spec (image, resources, GPU, volumes, node selector) |
 | `service.yaml` | `LoadBalancer` service exposing port 22 |
@@ -56,8 +57,15 @@ kubectl get nodes -o wide
 
 ## 4. Deploy
 
+Create the local volume directory on `rogue1` once:
+
+```bash
+sudo mkdir -p /mnt/dbhot/vscode-workspace
+```
+
 ```powershell
 kubectl apply -f configmap.yaml
+kubectl apply -f pv.yaml
 kubectl apply -f pvc.yaml
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
