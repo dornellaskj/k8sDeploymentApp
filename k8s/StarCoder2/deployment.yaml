@@ -25,7 +25,7 @@ spec:
             memory: "16Gi"
           limits:
             cpu: "4"
-            memory: "16Gi"
+            memory: "20Gi"
             nvidia.com/gpu: 2
         env:
           - name: num_ctx
