@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vscode-remote-2
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # RWO local volume + single GPU: old pod must release both before the new one starts
+  selector:
+    matchLabels:
+      app: vscode-remote-2
+  template:
+    metadata:
+      labels:
+        app: vscode-remote-2
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: rogue1 # must point at a node with an NVIDIA GPU + device plugin
+      tolerations:
+        - key: "db-only"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      dnsPolicy: None # node's /etc/resolv.conf is the systemd-resolved stub (127.0.0.53), unreachable from pod netns
+      dnsConfig:
+        nameservers:
+          - 1.1.1.1
+          - 8.8.8.8
+        options:
+          - name: ndots
+            value: "2"
+      containers:
+        - name: vscode-remote
+          image: nvidia/cuda:12.4.1-devel-ubuntu22.04
+          command: ["/bin/bash", "/etc/vscode-remote/entrypoint.sh"]
+          ports:
+            - containerPort: 22
+          resources:
+            requests:
+              cpu: "2"
+              memory: "16Gi"
+            limits:
+              cpu: "8"
+              memory: "32Gi"
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: config
+              mountPath: /etc/vscode-remote
+              readOnly: true
+            - name: ssh-key
+              mountPath: /etc/vscode-remote-ssh
+              readOnly: true
+            - name: workspace
+              mountPath: /home/coder
+      volumes:
+        - name: config
+          configMap:
+            name: vscode-remote-config # shared with ../vsCode
+            defaultMode: 0755
+        - name: ssh-key
+          secret:
+            secretName: vscode-remote-ssh-key # shared with ../vsCode
+            defaultMode: 0400
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: vscode-workspace-pvc-rogue1-2
