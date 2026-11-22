@@ -22,14 +22,22 @@ spec:
         resources:
           requests:
             cpu: "4"
-            memory: "16Gi"
+            memory: "20Gi"
           limits:
             cpu: "4"
             memory: "20Gi"
             nvidia.com/gpu: 2
         env:
-          - name: num_ctx
+          - name: OLLAMA_CONTEXT_LENGTH
             value: "8192"
+          # Split the model across both GPUs instead of trying to fit on one
+          - name: OLLAMA_SCHED_SPREAD
+            value: "1"
+          # Reduce KV cache memory
+          - name: OLLAMA_FLASH_ATTENTION
+            value: "1"
+          - name: OLLAMA_KV_CACHE_TYPE
+            value: "q8_0"
           # Expose both GPUs to the container runtime layer
           - name: NVIDIA_VISIBLE_DEVICES
             value: "all"
